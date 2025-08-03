@@ -1,0 +1,6 @@
+{
+  "telegram_token": "8390767663:AAFrpHAdRXoZp8DijXHjib3nHoqpiYrFhUI",
+  "telegram_user_id": 5369306906,
+  "symbols": ["BTC/USDT", "ETH/USDT", "SOL/USDT", "BNB/USDT"],
+  "webhook_port": 8000
+}
