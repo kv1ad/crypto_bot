@@ -4,6 +4,7 @@ from core.strategy import calculate_tp_sl
 from core.messaging import send_signal
 from core.news import fetch_news
 from core.signal_filter import is_signal_reliable
+from core.exchanges import get_all_symbols_with_usdt  # добавлено
 
 app = Flask(__name__)
 
@@ -14,13 +15,15 @@ def index():
 @app.route("/webhook", methods=["POST"])
 def webhook():
     data = request.json
-    print("Получены данные:", data)  # Для отладки в логах Render
+    print("Получены данные:", data)  # лог
+
     symbol = data.get("symbol", "BTC/USDT")
     direction = data.get("direction", "LONG")
     entry = float(data.get("price", 0))
+    source = data.get("source", "Webhook")  # откуда пришёл сигнал
 
     news = fetch_news()
-    print("Новости:", news)  # Для отладки
+    print("Новости:", news)
 
     signal_data = {
         "symbol": symbol,
@@ -33,14 +36,22 @@ def webhook():
     }
 
     reliable, _ = is_signal_reliable(signal_data, {}, news)
-    print("Надежность сигнала:", reliable)  # Для отладки
+    print("Надежность сигнала:", reliable)
 
     if reliable:
         tp, sl = calculate_tp_sl(entry, direction)
-        print(f"TP: {tp}, SL: {sl}")  # Для отладки
-        send_signal(symbol, direction, entry, tp, sl, "Webhook", news)
+        print(f"TP: {tp}, SL: {sl}")
+        send_signal(symbol, direction, entry, tp, sl, source, news)
 
     return "ok", 200
+
+@app.route("/symbols", methods=["GET"])
+def symbols():
+    binance, bybit = get_all_symbols_with_usdt()
+    return {
+        "binance": binance[:50],
+        "bybit": bybit[:50]
+    }, 200
 
 def start_webhook_server():
     port = int(os.environ.get("PORT", 8000))
@@ -48,3 +59,4 @@ def start_webhook_server():
 
 if __name__ == "__main__":
     start_webhook_server()
+
