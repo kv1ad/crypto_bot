@@ -16,4 +16,4 @@
 
 📩 Все сигналы будут приходить вам в Telegram (@kv1ad)
 📁 Логи отклонённых сигналов: logs/rejected_signals.log
-⚙️ Настройки находятся в config.json
+⚙️ Настройки находятся в config.json 
