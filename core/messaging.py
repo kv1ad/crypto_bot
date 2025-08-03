@@ -1,5 +1,6 @@
 from telegram import Bot
 import json
+import asyncio  # Добавлено
 
 with open("config.json", "r") as f:
     config = json.load(f)
@@ -23,4 +24,5 @@ def send_signal(symbol, direction, entry, take_profits, stop_loss, trend, news_l
     else:
         text += "\n - нет важных новостей"
 
-    bot.send_message(chat_id=CHAT_ID, text=text)
+    # Исправлено: ожидаем асинхронно
+    asyncio.run(bot.send_message(chat_id=CHAT_ID, text=text))
